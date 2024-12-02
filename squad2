@@ -1,0 +1,30 @@
+from pyspark.sql import SparkSession 
+from pyspark.sql import functions as col
+spark = SparkSession.builder.getOrCreate()
+
+storageContainer = 'bayerhackathon'
+storageAccount = 'adlsaccountbayers'
+landingMountPoint = '/mnt/hackathon'
+databricksScopeName = 'bayers'
+storageAccountSasToken = 'access-key'
+SasToken = dbutils.secrets.get(scope=databricksScopeName,key=storageAccountSasToken)
+print(SasToken)
+dbutils.fs.ls(landingMountPoint)
+
+##Loading the csv files.
+
+cust_path = "dbfs:/mnt/hackathon/customer.csv"
+order_path = "dbfs:/mnt/hackathon/order.csv"
+order_line_path = "dbfs:/mnt/hackathon/order_line.csv"
+cust_behaviour_path = "dbfs:/mnt/hackathon/customer_behaviour.csv"
+
+##Removing the customer phone numbers are blanks.
+
+cust_drop_NA_df = customer_df.dropna(subset=["phone"])
+cust_drop_NA_df.show()
+
+cust_joined_order_df = customer_df.join(order_df,customer_df.customer_id == order_df.customer_id, how="LeftOuter")
+cust_drop_NA_df = cust_joined_order_df.dropna(subset=["phone"])
+
+
+
